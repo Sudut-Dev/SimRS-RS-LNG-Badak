@@ -8,6 +8,7 @@ use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\PemeriksaanController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\PoliController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +48,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Dashboard stats
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Laporan
+        Route::get('/laporan/harian',  [LaporanController::class, 'harian'])->name('laporan.harian');
+        Route::get('/laporan/bulanan', [LaporanController::class, 'bulanan'])->name('laporan.bulanan');
+        Route::get('/laporan/tahunan', [LaporanController::class, 'tahunan'])->name('laporan.tahunan');
 
         // Master Data - Pasien (semua petugas bisa akses)
         Route::apiResource('pasien', PasienController::class);

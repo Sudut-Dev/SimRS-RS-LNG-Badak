@@ -1,59 +1,340 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SIMRS — Sistem Informasi Manajemen Rumah Sakit
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+> Aplikasi web untuk manajemen rawat jalan RS LNG Badak — mencakup pendaftaran pasien, pemeriksaan, pembayaran, laporan analitik, dan manajemen pengguna dalam satu platform terintegrasi.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+##  Daftar Isi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- [Tentang Proyek](#-tentang-proyek)
+- [Fitur Utama](#-fitur-utama)
+- [Teknologi](#-teknologi)
+- [Arsitektur](#-arsitektur)
+- [Instalasi](#-instalasi)
+- [Akun Demo](#-akun-demo)
+- [Struktur Direktori](#-struktur-direktori)
+- [API Endpoint](#-api-endpoint)
+- [Screenshots](#-screenshots)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+##  Tentang Proyek
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+SIMRS RS LNG Badak adalah aplikasi **Single Page Application (SPA)** berbasis web untuk mengelola alur pelayanan rawat jalan. Dibangun dengan arsitektur **Laravel + Vue.js**, sistem ini dirancang agar mudah digunakan oleh petugas rumah sakit di berbagai perangkat — desktop maupun mobile.
 
-## Laravel Sponsors
+### Alur Pelayanan
+```
+Pasien Datang → Pendaftaran → Antrian Poli → Pemeriksaan Dokter → Pembayaran → Selesai
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+##  Fitur Utama
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+###  Autentikasi & Keamanan
+- Login dengan halaman premium split-panel (dark/light mode)
+- Demo credentials dengan satu klik
+- Middleware proteksi role (`admin` / `petugas`)
+- Injeksi user session ke Vue SPA via `window.__AUTH_USER__`
 
-## Contributing
+###  Dashboard
+- Statistik real-time hari ini (pendaftaran, pendapatan, pasien menunggu)
+- Grafik trend pendaftaran 7 hari terakhir
+- Donut chart pendaftaran per poli
+- Tabel antrian aktif
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+###  Pendaftaran Rawat Jalan
+- Cari pasien by NIK / nama
+- Pilih jadwal dokter & poli yang tersedia
+- Nomor urut antrian otomatis
+- Update status antrian (menunggu → dipanggil → selesai)
 
-## Code of Conduct
+###  Pemeriksaan
+- Input anamnesa, diagnosa (ICD-10), tindakan, resep obat
+- Riwayat pemeriksaan pasien
+- Integrasi langsung dari antrian pendaftaran
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+###  Pembayaran & Kasir
+- Input pembayaran multi-metode (Tunai, Transfer, BPJS, Asuransi)
+- Kalkulasi otomatis total tagihan & kembalian
+- Nomor kwitansi generate otomatis
+- Riwayat transaksi harian dengan filter
 
-## Security Vulnerabilities
+###  Laporan Analitik (3 Jenis)
+| Laporan | Isi |
+|---------|-----|
+| **Harian** | Ringkasan per hari, breakdown metode & poli, tabel transaksi |
+| **Bulanan** | Trend line chart, top dokter, rincian per hari |
+| **Tahunan** | Bar chart 12 bulan, growth YoY, perbandingan tahun lalu |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+> Semua laporan mendukung **Export CSV** dan **Cetak**
 
-## License
+### 👥 Manajemen Pengguna
+- CRUD pengguna (Tambah, Edit, Hapus)
+- **Quick toggle** status aktif/nonaktif langsung dari tabel
+- **Quick toggle** role Admin ↔ Petugas
+- Reset password oleh admin (dengan strength meter)
+- Statistik pengguna (total, admin, petugas, aktif, nonaktif)
+- Filter pencarian & export CSV
+- Konfirmasi hapus dengan ketik nama
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+###  UI/UX
+- **Dark Mode & Light Mode** — persisten via localStorage
+- **Responsive** — sidebar collapsible, tabel adaptif untuk mobile
+- Tema warna medical (biru primer, tipografi Inter + Plus Jakarta Sans)
+- Toast notification untuk semua aksi
+- Loading state & spinner di setiap operasi async
+
+---
+
+##  Teknologi
+
+### Backend
+| Teknologi | Versi | Kegunaan |
+|-----------|-------|----------|
+| **Laravel** | 12.x | Framework PHP, routing, middleware |
+| **Laravel Breeze** | — | Autentikasi (login, register, reset password) |
+| **MySQL** | 8.x | Database utama |
+| **Eloquent ORM** | — | Model & relasi database |
+
+### Frontend
+| Teknologi | Versi | Kegunaan |
+|-----------|-------|----------|
+| **Vue.js** | 3.x | SPA framework (Composition API) |
+| **Vue Router** | 4.x | Client-side routing |
+| **Chart.js + vue-chartjs** | — | Grafik dashboard & laporan |
+| **Axios** | — | HTTP client untuk API calls |
+| **Vite** | 7.x | Build tool & dev server |
+
+---
+
+##  Arsitektur
+
+```
+┌─────────────────────────────────────────────────┐
+│                  Browser (SPA)                   │
+│  Vue.js 3 + Vue Router + Chart.js + Axios        │
+└──────────────────┬──────────────────────────────┘
+                   │ HTTP (JSON API)
+┌──────────────────▼──────────────────────────────┐
+│                Laravel 12                        │
+│  ┌────────────┐  ┌──────────────┐               │
+│  │ web.php    │  │ Middleware   │               │
+│  │ (routes)   │  │ auth, admin  │               │
+│  └─────┬──────┘  └──────────────┘               │
+│        │                                         │
+│  ┌─────▼──────────────────────────────────┐      │
+│  │            Controllers                  │      │
+│  │  Dashboard · Pendaftaran · Pembayaran  │      │
+│  │  Laporan · User · Dokter · Poli        │      │
+│  └─────┬──────────────────────────────────┘      │
+│        │                                         │
+│  ┌─────▼──────────────────────────────────┐      │
+│  │         Eloquent Models & DB           │      │
+│  └────────────────────────────────────────┘      │
+└─────────────────────────────────────────────────┘
+                   │
+        ┌──────────▼──────────┐
+        │       MySQL         │
+        └─────────────────────┘
+```
+
+---
+
+##  Instalasi
+
+### Prasyarat
+- PHP >= 8.2
+- Composer
+- Node.js >= 18.x
+- MySQL >= 8.0
+
+### Langkah Instalasi
+
+```bash
+# 1. Clone repository
+git clone <url-repo>
+cd simrs
+
+# 2. Install dependensi PHP
+composer install
+
+# 3. Install dependensi Node.js
+npm install
+
+# 4. Salin file environment
+cp .env.example .env
+
+# 5. Generate application key
+php artisan key:generate
+
+# 6. Konfigurasi database di .env
+# DB_DATABASE=simrs
+# DB_USERNAME=root
+# DB_PASSWORD=
+
+# 7. Jalankan migrasi & seeder
+php artisan migrate --seed
+
+# 8. Build assets
+npm run build
+
+# 9. Jalankan server
+php artisan serve
+```
+
+### Development Mode
+
+```bash
+# Terminal 1: Laravel server
+php artisan serve
+
+# Terminal 2: Vite dev server (HMR)
+npm run dev
+```
+
+---
+
+##  Akun Demo
+
+| Role | Email | Password | Akses |
+|------|-------|----------|-------|
+| **Administrator** | `admin@simrs.id` | `admin123` | Semua fitur + Manajemen User, Dokter, Poli |
+| **Petugas** | `petugas@simrs.id` | `petugas123` | Pendaftaran, Pemeriksaan, Pembayaran, Laporan |
+| **Kasir** | `kasir@simrs.id` | `kasir123` | Pendaftaran, Pembayaran, Laporan |
+
+---
+
+##  Struktur Direktori
+
+```
+simrs/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── DashboardController.php
+│   │   │   ├── PendaftaranController.php
+│   │   │   ├── PemeriksaanController.php
+│   │   │   ├── PembayaranController.php
+│   │   │   ├── LaporanController.php      ← Laporan Harian/Bulanan/Tahunan
+│   │   │   ├── UserController.php         ← Manajemen Pengguna
+│   │   │   ├── PasienController.php
+│   │   │   ├── DokterController.php
+│   │   │   └── PoliController.php
+│   │   └── Middleware/
+│   │       └── AdminMiddleware.php
+│   └── Models/
+│       ├── User.php
+│       ├── Pasien.php
+│       ├── Dokter.php
+│       ├── Poli.php
+│       ├── JadwalDokter.php
+│       ├── Pendaftaran.php
+│       ├── Pemeriksaan.php
+│       └── Pembayaran.php
+│
+├── resources/
+│   ├── css/
+│   │   └── app.css                        ← CSS variables, dark/light mode
+│   ├── js/
+│   │   ├── App.vue                        ← Layout utama (sidebar, topbar)
+│   │   ├── router.js                      ← Vue Router config
+│   │   ├── app.js                         ← Entry point
+│   │   ├── composables/
+│   │   │   ├── useApi.js                  ← HTTP wrapper
+│   │   │   └── useToast.js                ← Notifikasi toast
+│   │   └── pages/
+│   │       ├── Dashboard.vue
+│   │       ├── Pendaftaran.vue
+│   │       ├── Pembayaran.vue
+│   │       ├── Laporan.vue                ← Laporan Harian/Bulanan/Tahunan
+│   │       ├── ManajemenUser.vue          ← Manajemen Pengguna
+│   │       ├── MasterPasien.vue
+│   │       ├── MasterDokter.vue
+│   │       ├── MasterPoli.vue
+│   │       └── JadwalDokter.vue
+│   └── views/
+│       ├── app.blade.php                  ← SPA shell
+│       └── auth/
+│           └── login.blade.php            ← Halaman login premium
+│
+├── routes/
+│   └── web.php                            ← Semua route (SPA + API)
+│
+└── database/
+    ├── migrations/                         ← Skema tabel
+    └── seeders/
+        └── DatabaseSeeder.php             ← Data awal (user, poli, dokter, jadwal, pasien)
+```
+
+---
+
+## 🔌 API Endpoint
+
+Semua endpoint memerlukan autentikasi (`auth` middleware). Endpoint bertanda `` khusus Admin.
+
+### Dashboard
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| `GET` | `/api/dashboard` | Statistik & data chart dashboard |
+
+### Laporan
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| `GET` | `/api/laporan/harian` | Laporan harian (param: `tanggal`) |
+| `GET` | `/api/laporan/bulanan` | Laporan bulanan (param: `bulan` Y-m) |
+| `GET` | `/api/laporan/tahunan` | Laporan tahunan (param: `tahun`) |
+
+### Manajemen Pengguna 
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| `GET` | `/api/users` | Daftar pengguna (filter: search, role, status) |
+| `GET` | `/api/users/stats` | Statistik ringkasan pengguna |
+| `POST` | `/api/users` | Tambah pengguna baru |
+| `PUT` | `/api/users/{id}` | Update data pengguna |
+| `DELETE` | `/api/users/{id}` | Hapus pengguna |
+| `PATCH` | `/api/users/{id}/toggle-status` | Toggle aktif/nonaktif |
+| `PATCH` | `/api/users/{id}/change-role` | Ubah role pengguna |
+| `POST` | `/api/users/{id}/reset-password` | Reset password |
+
+### Master Data 
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| `GET/POST/PUT/DELETE` | `/api/dokter` | CRUD data dokter |
+| `GET/POST/PUT/DELETE` | `/api/poli` | CRUD data poli |
+| `GET/POST/PUT/DELETE` | `/api/jadwal-dokter` | CRUD jadwal dokter |
+
+### Transaksi
+| Method | Endpoint | Deskripsi |
+|--------|----------|-----------|
+| `GET/POST` | `/api/pasien` | Data pasien (semua user) |
+| `GET/POST` | `/api/pendaftaran` | Pendaftaran rawat jalan |
+| `PATCH` | `/api/pendaftaran/{id}/status` | Update status antrian |
+| `GET/POST/PUT` | `/api/pemeriksaan` | Data pemeriksaan |
+| `GET/POST` | `/api/pembayaran` | Data pembayaran & kasir |
+
+---
+
+##  Screenshots
+
+### Login
+> Halaman login split-panel dengan panel kiri dekoratif, demo credentials, toggle dark/light mode.
+
+### Dashboard
+> Statistik hari ini, grafik trend pendaftaran 7 hari, donut chart per poli, antrian aktif.
+
+### Laporan
+> Tiga tab laporan (Harian / Bulanan / Tahunan) dengan grafik, tabel, dan export CSV.
+
+### Manajemen Pengguna
+> Stat cards yang bisa diklik sebagai filter, quick toggle status & role, modal reset password dengan strength meter.
+
+---
+
+##  Lisensi
+
+Proyek ini menggunakan lisensi [MIT](https://opensource.org/licenses/MIT).
+
+---
+

@@ -6,6 +6,7 @@ import MasterPoli from './pages/MasterPoli.vue';
 import JadwalDokter from './pages/JadwalDokter.vue';
 import Pendaftaran from './pages/Pendaftaran.vue';
 import Pembayaran from './pages/Pembayaran.vue';
+import Laporan from './pages/Laporan.vue';
 import ManajemenUser from './pages/ManajemenUser.vue';
 
 const routes = [
@@ -17,6 +18,7 @@ const routes = [
     { path: '/master/jadwal', component: JadwalDokter, name: 'jadwal', meta: { title: 'Jadwal Dokter' } },
     { path: '/transaksi/pendaftaran', component: Pendaftaran, name: 'pendaftaran', meta: { title: 'Pendaftaran Rawat Jalan' } },
     { path: '/transaksi/pembayaran', component: Pembayaran, name: 'pembayaran', meta: { title: 'Pembayaran & Kasir' } },
+    { path: '/laporan', component: Laporan, name: 'laporan', meta: { title: 'Laporan & Analitik' } },
     { path: '/admin/users', component: ManajemenUser, name: 'users', meta: { title: 'Manajemen Pengguna', adminOnly: true } },
 ];
 
