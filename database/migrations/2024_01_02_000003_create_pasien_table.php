@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('pasien', function (Blueprint $table) {
             $table->id();
-            $table->string('no_rm', 15)->unique()->comment('Nomor Rekam Medis');
+            $table->string('no_rm', 20)->unique()->comment('Nomor Rekam Medis');
             $table->string('nik', 16)->unique()->comment('Nomor Induk Kependudukan - 16 digit');
             $table->string('nama_pasien', 100);
             $table->enum('jenis_kelamin', ['L', 'P']);
